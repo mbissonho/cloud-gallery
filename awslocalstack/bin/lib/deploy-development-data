@@ -1,0 +1,63 @@
+#!/bin/bash
+
+deploy_development_data() {
+
+  local BUCKET_NAME="my-local-gallery-bucket"
+  local THUMBNAIL_BUCKET_NAME="my-local-gallery-bucket-thumbnail"
+  local PROFILE_THUMBNAIL_BUCKET_NAME="my-local-gallery-profile-bucket-thumbnail"
+
+  local SNS_TOPIC_NAME="s3-upload-events"
+  local SQS_QUEUE_C_NAME="cloud-gallery-thumbnail-image-upload"
+
+  echo "Disabling S3 buckets notifications..."
+
+  # Main bucket (Usando BUCKET_NAME)
+  awslocal s3api put-bucket-notification-configuration \
+    --bucket "$BUCKET_NAME" \
+    --notification-configuration "{}"
+
+  # Thumbnail bucket (Usando THUMBNAIL_BUCKET_NAME)
+  awslocal s3api put-bucket-notification-configuration \
+    --bucket "$THUMBNAIL_BUCKET_NAME" \
+    --notification-configuration "{}"
+
+  echo "Copying images to buckets..."
+
+  awslocal s3 cp awslocalstack/samples/original/ "s3://$BUCKET_NAME/" --recursive --include "*.jpg"
+  awslocal s3 cp awslocalstack/samples/thumbnail/ "s3://$THUMBNAIL_BUCKET_NAME/" --recursive --include "*.jpg"
+  awslocal s3 cp awslocalstack/samples/profile/thumbnail/ "s3://$PROFILE_THUMBNAIL_BUCKET_NAME/" --recursive --include "*.jpg"
+
+  echo "Enabling S3 buckets notifications..."
+
+  # --- Configuração do Thumbnail Bucket (SQS) ---
+  SQS_QUEUE_C_URL=$(awslocal sqs create-queue --queue-name "$SQS_QUEUE_C_NAME" --query 'QueueUrl' --output text)
+  SQS_QUEUE_C_ARN=$(awslocal sqs get-queue-attributes --queue-url "$SQS_QUEUE_C_URL" --attribute-names QueueArn --query 'Attributes.QueueArn' --output text)
+
+  awslocal s3api put-bucket-notification-configuration \
+    --bucket "$THUMBNAIL_BUCKET_NAME" \
+    --notification-configuration "{\"QueueConfigurations\": [{\"Id\": \"thumbnail-upload-notification\",\"QueueArn\": \"$SQS_QUEUE_C_ARN\",\"Events\": [\"s3:ObjectCreated:Put\"]}]}"
+
+  # --- Configuração do Main Bucket (SNS) ---
+  # Nota: Certifique-se de que o 'jq' está instalado
+  SNS_TOPIC_ARN=$(awslocal sns list-topics | jq -r '.Topics[] | select(.TopicArn | endswith(":'"$SNS_TOPIC_NAME"'")) | .TopicArn')
+
+  # Correção da sintaxe do Heredoc (EOF deve estar no início da linha)
+  NOTIFICATION_CONFIG=$(cat <<EOF
+{
+  "TopicConfigurations": [
+    {
+      "Id": "s3-upload-notification",
+      "TopicArn": "$SNS_TOPIC_ARN",
+      "Events": ["s3:ObjectCreated:Put"]
+    }
+  ]
+}
+EOF
+)
+
+  awslocal s3api put-bucket-notification-configuration \
+    --bucket "$BUCKET_NAME" \
+    --notification-configuration "$NOTIFICATION_CONFIG"
+}
+
+

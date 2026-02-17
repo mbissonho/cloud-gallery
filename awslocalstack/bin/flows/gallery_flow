@@ -1,0 +1,53 @@
+#!/bin/bash
+source awslocalstack/bin/lib/aws_utils
+
+run_gallery_flow() {
+    log "--- Starting Flow: Cloud Gallery ---"
+
+    # Resources
+    local SRC_BUCKET="my-local-gallery-bucket"
+    local DST_BUCKET="my-local-gallery-bucket-thumbnail"
+    local TOPIC_NAME="s3-upload-events"
+    local Q_APP="cloud-gallery-main-image-upload-app"
+    local Q_LAMBDA="cloud-gallery-main-image-upload-lambda"
+    local Q_THUMB="cloud-gallery-thumbnail-image-upload"
+    local LAMBDA_NAME="S3EventThumbnailCreatorConsumerLambda"
+
+    # Buckets
+    create_bucket $SRC_BUCKET
+    set_bucket_cors $SRC_BUCKET
+
+    create_bucket $DST_BUCKET
+    set_bucket_public_read $DST_BUCKET
+
+    # Messaging (SNS + SQS)
+    local TOPIC_ARN=$(create_topic $TOPIC_NAME)
+
+    IFS='|' read -r Q_APP_URL Q_APP_ARN <<< $(create_queue $Q_APP)
+    IFS='|' read -r Q_LAMBDA_URL Q_LAMBDA_ARN <<< $(create_queue $Q_LAMBDA)
+    IFS='|' read -r Q_THUMB_URL Q_THUMB_ARN <<< $(create_queue $Q_THUMB)
+
+    subscribe_sqs_to_sns $TOPIC_ARN $Q_APP_URL $Q_APP_ARN
+    subscribe_sqs_to_sns $TOPIC_ARN $Q_LAMBDA_URL $Q_LAMBDA_ARN
+
+    # S3 Notifications -> SNS (Original Upload)
+    local NOTIF_CONFIG=$(printf '{"TopicConfigurations":[{"Id":"gallery-upload","TopicArn":"%s","Events":["s3:ObjectCreated:*"]}]}' "$TOPIC_ARN")
+    awslocal s3api put-bucket-notification-configuration --bucket $SRC_BUCKET --notification-configuration "$NOTIF_CONFIG"
+
+    # S3 Notifications -> SQS (Thumbnail Created)
+    local Q_POLICY=$(printf '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"s3.amazonaws.com"},"Action":"sqs:SendMessage","Resource":"%s","Condition":{"ArnEquals":{"aws:SourceArn":"arn:aws:s3:::%s"}}}]}' "$Q_THUMB_ARN" "$DST_BUCKET")
+    awslocal sqs set-queue-attributes --queue-url "$Q_THUMB_URL" --attributes "{\"Policy\": $(echo $Q_POLICY | jq -R .)}"
+
+    awslocal s3api put-bucket-notification-configuration --bucket $DST_BUCKET \
+        --notification-configuration "{\"QueueConfigurations\": [{\"Id\": \"thumb-created\",\"QueueArn\": \"$Q_THUMB_ARN\",\"Events\": [\"s3:ObjectCreated:*\"]}]}"
+
+    # Lambda
+    local ROLE_ARN=$1
+    local ZIP_FILE=$2
+    local ENV="Variables={THUMBNAIL_BUCKET_NAME=$DST_BUCKET,THUMBNAIL_QUALITY=100}"
+
+    deploy_lambda $LAMBDA_NAME $ROLE_ARN $ZIP_FILE "$ENV"
+
+    # Trigger Lambda
+    awslocal lambda create-event-source-mapping --function-name $LAMBDA_NAME --batch-size 1 --event-source-arn $Q_LAMBDA_ARN > /dev/null 2>&1 || true
+}

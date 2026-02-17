@@ -1,0 +1,41 @@
+{
+  "title_view": "My Profile",
+  "title_edit": "Edit Profile",
+  "labels": {
+    "name": "Name",
+    "bio": "Bio",
+    "about_me": "About Me",
+    "new_password": "New Password",
+    "current_password": "Current Password"
+  },
+  "buttons": {
+    "edit_profile": "Edit Profile",
+    "change_photo": "Change Photo",
+    "cancel": "Cancel",
+    "save": "Save Changes"
+  },
+  "placeholders": {
+    "no_bio": "No description provided.",
+    "password_required_placeholder": "Required to save new password"
+  },
+  "help": {
+    "avatar": "Click the icon to change.",
+    "password_section": "Leave password fields blank if you don't want to change it.",
+    "bio_counter": "{{current}}/1500"
+  },
+  "alt": {
+    "avatar": "Profile picture"
+  },
+  "errors": {
+    "required": "This field is required.",
+    "password_required_for_change": "Please provide your current password to set a new one.",
+    "password_min": "The new password must be at least 8 characters.",
+    "avatar_upload_failed": "Failed to update profile picture.",
+    "save_failed": "Failed to save profile."
+  },
+  "success": {
+    "avatar_uploaded": "Avatar updated successfully.",
+    "profile_photo_upload_processing": "Your new profile image was received. It'll be available soon.",
+    "profile_update": "You updated your profile successfully."
+  }
+}

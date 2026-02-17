@@ -1,0 +1,29 @@
+#!/bin/bash
+source awslocalstack/bin/lib/aws_utils
+source awslocalstack/bin/flows/gallery_flow
+source awslocalstack/bin/flows/profile_flow
+
+initialize_aws_arch() {
+  echo "--- Initializing AWS Architecture ---"
+
+  # Prepare Lambda Code (Shared)
+  log "Packaging Lambda function..."
+  rm -rf awslocalstack/lambda/thumbnail-creator/function.zip
+  zip -r awslocalstack/lambda/thumbnail-creator/function.zip awslocalstack/lambda/thumbnail-creator -x ".*" -x "__MACOSX" > /dev/null
+  ZIP_PATH="$(pwd)/awslocalstack/lambda/thumbnail-creator/function.zip"
+
+  # Create IAM Role (Shared)
+  ROLE_NAME="lambda-s3-integration-role"
+  ROLE_ARN=$(create_iam_role_lambda $ROLE_NAME)
+
+  # Attach permissive policy for S3 (Local Dev)
+  POLICY_ARN="arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  awslocal iam attach-role-policy --role-name $ROLE_NAME --policy-arn $POLICY_ARN
+
+  # Execute Flows
+  run_gallery_flow $ROLE_ARN $ZIP_PATH
+  run_profile_flow $ROLE_ARN $ZIP_PATH
+
+  echo "--- All resources initialized successfully! ---"
+}
+

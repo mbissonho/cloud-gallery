@@ -1,0 +1,25 @@
+{
+  "title": "Editing {{imageName}}",
+  "form": {
+    "tagsLabel": "Tags",
+    "statusLabel": "Status",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Add a brief description (max 255 characters)",
+    "saveButton": "Save Image",
+    "savingButton": "Saving...",
+    "statusAvailable": "AVAILABLE",
+    "statusDisabled": "DISABLED"
+  },
+  "validation": {
+    "descriptionMax": "The description cannot exceed 255 characters.",
+    "tagsRequired": "Tags required",
+    "statusInvalid": "Invalid status"
+  },
+  "success": {
+    "imageUpdate": "Image updated successfully!"
+  },
+  "error": {
+    "uploadFailed": "Failed to save image. Please try again.",
+    "noAuthToken": "Authentication token not found. Please log in again."
+  }
+}

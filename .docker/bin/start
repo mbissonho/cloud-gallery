@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ ${0} != ".docker/bin/start" ]; then
+  echo "You must run the script from the root folder"
+  exit 0
+fi
+
+source awslocalstack/bin/lib/initialize-aws-arch
+source awslocalstack/bin/lib/deploy-development-data
+
+export WWWUSER=${WWWUSER:-$UID}
+export WWWGROUP=${WWWGROUP:-$(id -g)}
+
+docker-compose -f awslocalstack/docker-compose.yml up -d
+docker-compose -f spa-react/docker-compose.yml up -d
+docker-compose -f api-laravel/docker-compose.yml up -d
+
+initialize_aws_arch
+deploy_development_data

@@ -1,0 +1,13 @@
+{
+  "title": "Entrar",
+  "emailLabel": "E-mail",
+  "passwordLabel": "Senha",
+  "buttonLogin": "Entrar",
+  "buttonLoggingIn": "Entrando...",
+  "errorMessage": "Erro ao fazer login!",
+  "requestError": "Erro na requisição:",
+  "validation": {
+    "invalidEmail": "E-mail inválido.",
+    "passwordRequired": "A senha é obrigatória."
+  }
+}

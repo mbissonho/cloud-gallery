@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ ${0} != ".docker/bin/install" ]; then
+  echo "You must run the script from the root folder"
+  exit 0
+fi
+
+export WWWUSER=${WWWUSER:-$UID}
+export WWWGROUP=${WWWGROUP:-$(id -g)}
+
+docker-compose -f api-laravel/docker-compose.yml exec laravel.test bash -c "chown -R sail:sail /var/www/html/vendor" &&
+docker-compose -f api-laravel/docker-compose.yml exec -u sail -w "/var/www/html" laravel.test composer i

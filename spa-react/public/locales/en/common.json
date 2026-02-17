@@ -1,0 +1,14 @@
+{
+  "yes": "Yes",
+  "no": "No",
+  "cancel": "Cancel",
+  "loading": "Loading...",
+  "page_of": "Page {{current}} of {{total}}",
+  "page_previous": "Previous",
+  "page_next": "Next",
+  "sign_in": "Sign In",
+  "sign_up": "Sign Up",
+  "logout": "Log out",
+  "my_image_list": "My Image List",
+  "profile": "Profile"
+}

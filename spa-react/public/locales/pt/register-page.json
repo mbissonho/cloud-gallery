@@ -1,0 +1,18 @@
+{
+  "title": "Cadastro",
+  "nameLabel": "Nome",
+  "emailLabel": "E-mail",
+  "passwordLabel": "Senha",
+  "passwordConfirmationLabel": "Confirmação de Senha",
+  "buttonRegister": "Cadastrar",
+  "buttonRegistering": "Cadastrando...",
+  "successMessage": "Cadastro realizado com sucesso!",
+  "errorMessage": "Erro ao cadastrar usuário!",
+  "requestError": "Erro na requisição:",
+  "validation": {
+    "nameMinLength": "O nome deve ter pelo menos 3 caracteres.",
+    "invalidEmail": "E-mail inválido.",
+    "passwordMinLength": "A senha deve ter pelo menos 8 caracteres.",
+    "passwordsMismatch": "As senhas não coincidem."
+  }
+}

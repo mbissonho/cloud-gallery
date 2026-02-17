@@ -1,0 +1,26 @@
+{
+  "title": "Image Upload",
+  "form": {
+    "titleLabel": "Image Title",
+    "titlePlaceholder": "Enter a title for the image",
+    "imageFileLabel": "Select Image",
+    "tagsLabel": "Tags",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Add a brief description (max 255 characters)",
+    "submitButton": "Upload Image",
+    "uploadingButton": "Uploading..."
+  },
+  "validation": {
+    "titleRequired": "The image title is required.",
+    "descriptionMax": "The description cannot exceed 255 characters.",
+    "fileRequired": "Please select an image to upload.",
+    "tagsRequired": "Tags required"
+  },
+  "success": {
+    "imageUpload": "Image uploaded successfully!"
+  },
+  "error": {
+    "uploadFailed": "Failed to upload image. Please try again.",
+    "noAuthToken": "Authentication token not found. Please log in again."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Register",
+  "nameLabel": "Name",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "passwordConfirmationLabel": "Password Confirmation",
+  "buttonRegister": "Register",
+  "buttonRegistering": "Registering...",
+  "successMessage": "Registration successful!",
+  "errorMessage": "Error registering user!",
+  "requestError": "Request error:",
+  "validation": {
+    "nameMinLength": "Name must be at least 3 characters long.",
+    "invalidEmail": "Invalid email.",
+    "passwordMinLength": "Password must be at least 8 characters long.",
+    "passwordsMismatch": "Passwords do not match."
+  }
+}

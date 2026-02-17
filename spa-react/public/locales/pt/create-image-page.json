@@ -1,0 +1,26 @@
+{
+  "title": "Upload de Imagem",
+  "form": {
+    "titleLabel": "Título da Imagem",
+    "titlePlaceholder": "Digite um título para a imagem",
+    "imageFileLabel": "Selecione a Imagem",
+    "tagsLabel": "Tags",
+    "descriptionLabel": "Descrição (opcional)",
+    "descriptionPlaceholder": "Adicione uma breve descrição (máx. 255 caracteres)",
+    "submitButton": "Enviar Imagem",
+    "uploadingButton": "Enviando..."
+  },
+  "validation": {
+    "titleRequired": "O título da imagem é obrigatório.",
+    "descriptionMax": "A descrição não pode ter mais de 255 caracteres.",
+    "fileRequired": "Por favor, selecione uma imagem para upload.",
+    "tagsRequired": "Tags obrigatórias"
+  },
+  "success": {
+    "imageUpload": "Imagem enviada com sucesso!"
+  },
+  "error": {
+    "uploadFailed": "Falha ao enviar a imagem. Tente novamente.",
+    "noAuthToken": "Token de autenticação não encontrado. Faça login novamente."
+  }
+}

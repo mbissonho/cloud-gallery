@@ -1,0 +1,60 @@
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    image: localstack/localstack:4.7.0
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      - SERVICES=S3,lambda,sns,sqs,iam,cloudwatch,logs
+      - OPENSEARCH_CUSTOM_BACKEND=http://opensearch:9200
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - awslocalstack
+  opensearch:
+    image: opensearchproject/opensearch:2
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true
+      - discovery.type=single-node
+      - cluster.routing.allocation.disk.threshold_enabled=false
+    ports:
+      - 9200:9200
+      - 9600:9600
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    volumes:
+      - opensearch:/usr/share/opensearch/data
+    depends_on:
+      - localstack
+    networks:
+      - awslocalstack
+  cdn-server:
+    image: nginx:latest
+    volumes:
+      - ../.docker/awslocalstack/cdn-server/nginx.conf:/etc/nginx/conf.d/default.conf
+      - cdn-server:/var/cache/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - localstack
+    restart: on-failure
+    networks:
+      - awslocalstack
+networks:
+  awslocalstack:
+    driver: bridge
+volumes:
+  opensearch:
+    driver: local
+  cdn-server:
+    driver: local
+  localstack:
+    driver: local

@@ -1,0 +1,72 @@
+#!/bin/bash
+
+REGION="us-east-1"
+ACCOUNT_ID=$(awslocal sts get-caller-identity --query Account --output text)
+
+log() { echo -e "\033[1;34m[AWS-SETUP]\033[0m $1"; }
+
+create_bucket() {
+    local BUCKET_NAME=$1
+    log "Checking Bucket: $BUCKET_NAME"
+    awslocal s3api create-bucket --bucket $BUCKET_NAME --region $REGION > /dev/null 2>&1 || true
+}
+
+set_bucket_cors() {
+    local BUCKET_NAME=$1
+    local CORS_CONFIG='{"CORSRules": [ { "AllowedHeaders": ["*"], "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"], "AllowedOrigins": ["*"], "ExposeHeaders": [], "MaxAgeSeconds": 3000 } ]}'
+    awslocal s3api put-bucket-cors --bucket $BUCKET_NAME --cors-configuration "$CORS_CONFIG"
+}
+
+set_bucket_public_read() {
+    local BUCKET_NAME=$1
+    local POLICY=$(printf '{"Version":"2012-10-17","Statement":[{"Sid":"PublicRead","Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::%s/*"}]}' "$BUCKET_NAME")
+    awslocal s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$POLICY"
+}
+
+create_topic() {
+    local TOPIC_NAME=$1
+    awslocal sns create-topic --name $TOPIC_NAME --query 'TopicArn' --output text
+}
+
+create_queue() {
+    local QUEUE_NAME=$1
+    local Q_URL=$(awslocal sqs create-queue --queue-name $QUEUE_NAME --query 'QueueUrl' --output text)
+    local Q_ARN=$(awslocal sqs get-queue-attributes --queue-url $Q_URL --attribute-names QueueArn --query 'Attributes.QueueArn' --output text)
+    echo "$Q_URL|$Q_ARN"
+}
+
+subscribe_sqs_to_sns() {
+    local TOPIC_ARN=$1
+    local QUEUE_URL=$2
+    local QUEUE_ARN=$3
+
+    awslocal sns subscribe --topic-arn $TOPIC_ARN --protocol sqs --notification-endpoint $QUEUE_ARN > /dev/null
+
+    local POLICY=$(printf '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"sns.amazonaws.com"},"Action":"sqs:SendMessage","Resource":"%s","Condition":{"ArnEquals":{"aws:SourceArn":"%s"}}}]}' "$QUEUE_ARN" "$TOPIC_ARN")
+    awslocal sqs set-queue-attributes --queue-url "$QUEUE_URL" --attributes "{\"Policy\": $(echo $POLICY | jq -R .)}"
+}
+
+create_iam_role_lambda() {
+    local ROLE_NAME=$1
+    awslocal iam create-role --role-name $ROLE_NAME --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"lambda.amazonaws.com"},"Action":"sts:AssumeRole"}]}' > /dev/null 2>&1 || true
+    awslocal iam get-role --role-name $ROLE_NAME --query 'Role.Arn' --output text
+}
+
+deploy_lambda() {
+    local FUNC_NAME=$1
+    local ROLE_ARN=$2
+    local ZIP_FILE=$3
+    local ENV_VARS=$4
+
+    log "Deploying/Updating Lambda: $FUNC_NAME"
+
+    awslocal lambda get-function --function-name $FUNC_NAME > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        awslocal lambda create-function --function-name $FUNC_NAME --runtime nodejs18.x \
+            --zip-file fileb://$ZIP_FILE --handler index.handler --role $ROLE_ARN \
+            --region $REGION --environment "$ENV_VARS" --no-cli-pager > /dev/null
+    else
+        awslocal lambda update-function-code --function-name $FUNC_NAME --zip-file fileb://$ZIP_FILE > /dev/null
+        awslocal lambda update-function-configuration --function-name $FUNC_NAME --environment "$ENV_VARS" --no-cli-pager > /dev/null
+    fi
+}

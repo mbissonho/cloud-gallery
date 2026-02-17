@@ -1,0 +1,13 @@
+{
+  "title": "Login",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "buttonLogin": "Login",
+  "buttonLoggingIn": "Logging in...",
+  "errorMessage": "Error logging in!",
+  "requestError": "Request error:",
+  "validation": {
+    "invalidEmail": "Invalid email.",
+    "passwordRequired": "Password is required."
+  }
+}

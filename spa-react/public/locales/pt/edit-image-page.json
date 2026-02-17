@@ -1,0 +1,25 @@
+{
+  "title": "Editando {{imageName}}",
+  "form": {
+    "tagsLabel": "Tags",
+    "statusLabel": "Status",
+    "descriptionLabel": "Descrição (opcional)",
+    "descriptionPlaceholder": "Adicione uma breve descrição (máximo de 255 caracteres)",
+    "saveButton": "Salvar Imagem",
+    "savingButton": "Salvando...",
+    "statusAvailable": "DISPONIVEL",
+    "statusDisabled": "DESABILITADA"
+  },
+  "validation": {
+    "descriptionMax": "A descrição não pode exceder 255 caracteres.",
+    "tagsRequired": "Tags são obrigatórias",
+    "statusInvalid": "Status inválido"
+  },
+  "success": {
+    "imageUpdate": "Imagem atualizada com sucesso!"
+  },
+  "error": {
+    "uploadFailed": "Falha ao enviar a imagem. Tente novamente.",
+    "noAuthToken": "Token de autenticação não encontrado. Faça login novamente."
+  }
+}

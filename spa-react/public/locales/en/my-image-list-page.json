@@ -1,0 +1,5 @@
+{
+  "title": "My Images",
+  "delete_image_modal_title": "Delete Image",
+  "delete_image_modal_text": "Are you sure you want to delete image {{imageName}}?"
+}

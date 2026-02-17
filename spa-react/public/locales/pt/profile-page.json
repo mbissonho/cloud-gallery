@@ -1,0 +1,41 @@
+{
+  "title_view": "Meu Perfil",
+  "title_edit": "Editar Perfil",
+  "labels": {
+    "name": "Nome",
+    "bio": "Biografia",
+    "about_me": "Sobre Mim",
+    "new_password": "Nova Senha",
+    "current_password": "Senha Atual"
+  },
+  "buttons": {
+    "edit_profile": "Editar Perfil",
+    "change_photo": "Alterar Foto",
+    "cancel": "Cancelar",
+    "save": "Salvar Alterações"
+  },
+  "placeholders": {
+    "no_bio": "Nenhuma descrição informada.",
+    "password_required_placeholder": "Obrigatório para salvar nova senha"
+  },
+  "help": {
+    "avatar": "Clique no ícone para alterar.",
+    "password_section": "Deixe os campos de senha em branco se não deseja alterá-la.",
+    "bio_counter": "{{current}}/1500"
+  },
+  "alt": {
+    "avatar": "Foto de perfil"
+  },
+  "errors": {
+    "required": "Campo obrigatório.",
+    "password_required_for_change": "Informe sua senha atual para definir uma nova.",
+    "password_min": "A nova senha deve ter no mínimo 8 caracteres.",
+    "avatar_upload_failed": "Erro ao atualizar foto de perfil.",
+    "save_failed": "Erro ao salvar perfil."
+  },
+  "success": {
+    "avatar_uploaded": "Foto de perfil atualizada com sucesso.",
+    "profile_photo_upload_processing": "Sua nova imagem de perfil foi recebida. Estará disponível em breve.",
+    "profile_update": "Você atualizou seu perfil com sucesso."
+  }
+}
