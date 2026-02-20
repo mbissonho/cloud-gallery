@@ -5,6 +5,12 @@ services:
     ports:
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
       - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4566/_localstack/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     environment:
       - SERVICES=S3,lambda,sns,sqs,iam,cloudwatch,logs
       - OPENSEARCH_CUSTOM_BACKEND=http://opensearch:9200

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ ${0} != ".docker/bin/down" ]; then
+  echo "You must run the script from the root folder"
+  exit 0
+fi
+
+export WWWUSER=${WWWUSER:-$UID}
+export WWWGROUP=${WWWGROUP:-$(id -g)}
+
+docker compose -f spa-react/docker-compose.yml down -v
+docker compose -f api-laravel/docker-compose.yml down -v
+docker compose -f awslocalstack/docker-compose.yml down -v

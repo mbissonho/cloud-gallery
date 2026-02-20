@@ -8,5 +8,7 @@ fi
 export WWWUSER=${WWWUSER:-$UID}
 export WWWGROUP=${WWWGROUP:-$(id -g)}
 
-docker-compose -f api-laravel/docker-compose.yml exec laravel.test bash -c "chown -R sail:sail /var/www/html/vendor" &&
-docker-compose -f api-laravel/docker-compose.yml exec -u sail -w "/var/www/html" laravel.test composer i
+docker compose -f api-laravel/docker-compose.yml up -d laravel.test &&
+docker compose -f api-laravel/docker-compose.yml exec laravel.test bash -c "chown -R sail:sail /var/www/html/vendor" &&
+docker compose -f api-laravel/docker-compose.yml exec -u sail -w "/var/www/html" laravel.test composer i &&
+docker compose -f api-laravel/docker-compose.yml stop laravel.test
