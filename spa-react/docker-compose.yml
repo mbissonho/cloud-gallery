@@ -11,4 +11,4 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - HOME=/app
       - npm_config_cache=/app/.npm-cache
-    command: sh -c "npm install && npm run dev -- --host"
+    command: tail -f /dev/null

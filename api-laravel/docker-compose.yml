@@ -46,7 +46,6 @@ services:
             - sail
         depends_on:
             - mysql
-            - laravel.test
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -78,6 +77,4 @@ volumes:
     sail-mysql:
         driver: local
     sail-opensearch:
-        driver: local
-    sail-cdn-server:
         driver: local

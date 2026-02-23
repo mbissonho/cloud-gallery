@@ -9,7 +9,7 @@ initialize_aws_arch() {
   # Prepare Lambda Code (Shared)
   log "Packaging Lambda function..."
   rm -rf awslocalstack/lambda/thumbnail-creator/function.zip
-  zip -r awslocalstack/lambda/thumbnail-creator/function.zip awslocalstack/lambda/thumbnail-creator -x ".*" -x "__MACOSX" > /dev/null
+  (cd awslocalstack/lambda/thumbnail-creator && zip -r function.zip . -x ".*" -x "__MACOSX" > /dev/null)
   ZIP_PATH="$(pwd)/awslocalstack/lambda/thumbnail-creator/function.zip"
 
   # Create IAM Role (Shared)
