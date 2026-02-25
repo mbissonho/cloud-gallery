@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ${0} != ".docker/bin/bash" ]; then
+if [ ${0} != ".docker/bin/build-api-container" ]; then
   echo "You must run the script from the root folder"
   exit 0
 fi
@@ -8,4 +8,4 @@ fi
 export WWWUSER=${WWWUSER:-$UID}
 export WWWGROUP=${WWWGROUP:-$(id -g)}
 
-docker compose -f api-laravel/docker-compose.yml exec -it -u sail  laravel.web bash
+docker compose -f api-laravel/docker-compose.yml build laravel.web

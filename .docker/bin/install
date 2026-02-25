@@ -8,15 +8,15 @@ fi
 export WWWUSER=${WWWUSER:-$UID}
 export WWWGROUP=${WWWGROUP:-$(id -g)}
 
-(cd api-laravel && docker run --rm -v $(pwd):/var/www/html -w /var/www/html -u "$WWWUSER:$WWWGROUP" composer:2.6.5 composer install) &&
-docker compose -f api-laravel/docker-compose.yml exec laravel.test bash -c "chown -R sail:sail /var/www/html/vendor"
+(cd api-laravel && docker run --rm -v $(pwd):/var/www/html -w /var/www/html -u "$WWWUSER:$WWWGROUP" composer:2.6.5 composer install; docker rmi composer:2.6.5) &&
+docker compose -f api-laravel/docker-compose.yml exec laravel.web bash -c "chown -R sail:sail /var/www/html/vendor"
 
 docker compose -f spa-react/docker-compose.yml up -d --wait
 docker compose -f spa-react/docker-compose.yml exec spa-react npm install
 
 docker compose -f awslocalstack/docker-compose.yml up -d --wait
 
-(cd awslocalstack/lambda/thumbnail-creator && docker run --rm -v "$(pwd):/app" -w /app -e HOME=/tmp -u "$WWWUSER:$WWWGROUP" node:18 npm install)
+(cd awslocalstack/lambda/thumbnail-creator && docker run --rm -v "$(pwd):/app" -w /app -e HOME=/tmp -u "$WWWUSER:$WWWGROUP" node:18 npm install; docker rmi node:18)
 
 docker compose -f awslocalstack/docker-compose.yml stop
 docker compose -f spa-react/docker-compose.yml stop

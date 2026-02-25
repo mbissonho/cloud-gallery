@@ -19,7 +19,7 @@ export WWWGROUP=${WWWGROUP:-$(id -g)}
 if docker compose -f awslocalstack/docker-compose.yml up -d --wait; then
   docker compose -f spa-react/docker-compose.yml up -d --wait
   docker compose -f spa-react/docker-compose.yml exec -d spa-react npm run dev -- --host &&
-  docker compose -f api-laravel/docker-compose.yml up -d
+  docker compose -f api-laravel/docker-compose.yml up -d --force-recreate
 
   initialize_aws_arch
   deploy_development_data
