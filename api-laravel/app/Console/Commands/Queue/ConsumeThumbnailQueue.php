@@ -26,7 +26,7 @@ class ConsumeThumbnailQueue extends Command
                 'WaitTimeSeconds' => 20
             ]);
 
-            $messages = $result->get('Messages');
+            $messages = $result->get('Messages') ?? [];
 
             foreach ($messages as $message) {
                 $receiptHandle = $message['ReceiptHandle'];
