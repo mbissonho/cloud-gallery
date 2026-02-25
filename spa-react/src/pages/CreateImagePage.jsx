@@ -86,7 +86,6 @@ export default function CreateImagePage() {
         });
       }
 
-
       const response = await axiosClient.get(
         "/api/v1/image/s3_pre_signed_url",
         {
@@ -95,9 +94,6 @@ export default function CreateImagePage() {
       );
 
       let { url: presignedUrl } = response.data;
-
-      // TODO: Remove it later (Localstack related workaround)
-      presignedUrl = presignedUrl.replace("localstack", "localhost");
 
       await axios.put(presignedUrl, selectedFile, {
         headers: {

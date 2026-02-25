@@ -113,8 +113,6 @@ export default function EditProfilePage() {
 
       const body = response.data;
 
-      const preSignedUrl = body.url.replace("localstack", "localhost");
-
       await axios.put(preSignedUrl, file, {
         headers: {
           "Content-Type": file.type,
