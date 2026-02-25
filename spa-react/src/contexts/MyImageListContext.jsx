@@ -6,6 +6,7 @@ import {
   useState,
   createContext,
 } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import imageService from "../services/image-service";
 
 const MyImageListContext = createContext();
@@ -21,10 +22,16 @@ const useMyImageList = () => {
 };
 
 const MyImageListProvider = ({ children }) => {
+  const { page: pageParam } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [initialPage] = useState(pageParam ? parseInt(pageParam) : 1);
+
     // State Definitions
   const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState({
-    page: 1,
+    page: initialPage,
     perPage: 4,
     totalPages: 1,
   });
@@ -88,6 +95,44 @@ const MyImageListProvider = ({ children }) => {
       setShouldRefetch(false);
     }
   }, [getItems, shouldRefetch]);
+
+  // Effect to reset page when filters change
+  useEffect(() => {
+    // Only reset the page if it's not the initial mount and filters have actually changed
+    if (searchTerm === "" && filterTagIds.length === 0) return;
+
+    setPagination((prev) => {
+      if (prev.page !== 1) {
+        return { ...prev, page: 1 };
+      }
+      return prev;
+    });
+  }, [searchTerm, filterTagIds]);
+
+  // Effect to sync URL with pagination
+  useEffect(() => {
+    const isMyList = location.pathname === "/my-image-list" || location.pathname.startsWith("/my-image-list/page/");
+    if (isMyList) {
+      if (pagination.page === 1) {
+        if (location.pathname !== "/my-image-list") {
+          navigate("/my-image-list", { replace: true });
+        }
+      } else {
+        const newPath = `/my-image-list/page/${pagination.page}`;
+        if (location.pathname !== newPath) {
+          navigate(newPath);
+        }
+      }
+    }
+  }, [pagination.page, navigate, location.pathname]);
+
+  // Effect to sync pagination with URL (for back/forward browser buttons)
+  useEffect(() => {
+    const pageInUrl = pageParam ? parseInt(pageParam) : 1;
+    if (pageInUrl !== pagination.page) {
+      setPagination(prev => ({ ...prev, page: pageInUrl }));
+    }
+  }, [pageParam]);
 
   const exposedContextValue = useMemo(
     () => ({

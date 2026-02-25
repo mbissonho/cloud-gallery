@@ -93,7 +93,7 @@ export default function EditImagePage() {
           .catch((error) => {
             if (error.response?.status === 404) {
               toast.error(t("error.imageNotFound"));
-              navigate("/my-image-list");
+              navigate(-1);
             } else {
               toast.error(error.response?.data?.message || t("error.loadFailed"));
             }

@@ -6,6 +6,7 @@ import {
   useState,
   createContext,
 } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import imageService from "../services/image-service";
 
 const ImageListContext = createContext();
@@ -19,10 +20,16 @@ const useImageList = () => {
 };
 
 const ImageListProvider = ({ children }) => {
+  const { page: pageParam } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [initialPage] = useState(pageParam ? parseInt(pageParam) : 1);
+
     // State (Data that changes frequently)
   const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState({
-    page: 1,
+    page: initialPage,
     perPage: 4,
     totalPages: 1,
   });
@@ -81,6 +88,45 @@ const ImageListProvider = ({ children }) => {
   useEffect(() => {
     getItems();
   }, [getItems]); // getItems já inclui as dependências necessárias no useCallback
+
+  // Effect to reset page when filters change
+  useEffect(() => {
+    // Only reset the page if it's not the initial mount and filters have actually changed
+    // We compare with initialPage to avoid resetting during initial hydration
+    if (searchTerm === "" && filterTagIds.length === 0) return;
+
+    setPagination((prev) => {
+      if (prev.page !== 1) {
+        return { ...prev, page: 1 };
+      }
+      return prev;
+    });
+  }, [searchTerm, filterTagIds]);
+
+  // Effect to sync URL with pagination
+  useEffect(() => {
+    const isMainList = location.pathname === "/" || location.pathname.startsWith("/page/");
+    if (isMainList) {
+      if (pagination.page === 1) {
+        if (location.pathname !== "/") {
+          navigate("/", { replace: true });
+        }
+      } else {
+        const newPath = `/page/${pagination.page}`;
+        if (location.pathname !== newPath) {
+          navigate(newPath);
+        }
+      }
+    }
+  }, [pagination.page, navigate, location.pathname]);
+
+  // Effect to sync pagination with URL (for back/forward browser buttons)
+  useEffect(() => {
+    const pageInUrl = pageParam ? parseInt(pageParam) : 1;
+    if (pageInUrl !== pagination.page) {
+      setPagination(prev => ({ ...prev, page: pageInUrl }));
+    }
+  }, [pageParam]);
 
   const exposedContextValue = useMemo(
     () => ({

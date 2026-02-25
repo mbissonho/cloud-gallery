@@ -34,6 +34,14 @@ function App() {
               </ImageListProvider>
             }
           />
+          <Route
+            path="/page/:page"
+            element={
+              <ImageListProvider>
+                <ImageListPage />
+              </ImageListProvider>
+            }
+          />
           <Route path="/view/:imageId" element={<ViewImagePage />} />
           <Route path="/profile/:userId" element={<ViewProfilePage />} />
           <Route element={<GuestGuard redirectTo="/" />}>
@@ -44,6 +52,14 @@ function App() {
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route
               path="/my-image-list"
+              element={
+                <MyImageListProvider>
+                  <MyImageListPage />
+                </MyImageListProvider>
+              }
+            />
+            <Route
+              path="/my-image-list/page/:page"
               element={
                 <MyImageListProvider>
                   <MyImageListPage />
