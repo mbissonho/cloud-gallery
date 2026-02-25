@@ -66,15 +66,27 @@ class ViewImageTest extends TestCase
     public function test_authenticated_user_can_get_disabled_image_details_of_your_property()
     {
         //Arrange
+        Image::factory()
+            ->available()
+            ->ofUser($this->user->id)
+            ->create();
+
+        $disabledImageDescription = 'fake description';
+
         $disabledImage = Image::factory()
             ->disabled()
             ->ofUser($this->user->id)
-            ->create();
+            ->create([
+                'description' => $disabledImageDescription
+            ]);
 
         //Act and Assert
         $this
             ->actingAs($this->user)
             ->getJson(route('api.v1.image.details', ['imageId' => $disabledImage->id ]))
-            ->assertOk();
+            ->assertOk()
+            ->assertJsonFragment([
+                'description' => $disabledImageDescription
+            ]);
     }
 }

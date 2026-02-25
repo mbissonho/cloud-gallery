@@ -14,14 +14,16 @@ class ImageDetailsController extends Controller
     {
         $user = Auth::guard('sanctum')->user();
 
-        $query = Image::with(['user:name,bio,photo_storage_key,id', 'tags:name,id'])
-            ->where('status', ImageStatus::AVAILABLE);
+        $image = Image::with(['user:name,bio,photo_storage_key,id', 'tags:name,id'])
+            ->where(function ($query) use ($user) {
+                $query->where('status', ImageStatus::AVAILABLE);
 
-        if(null !== $user) {
-            $query
-                ->orWhere('user_id', $user?->id ?? null);
-        }
+                if ($user) {
+                    $query->orWhere('user_id', $user->id);
+                }
+            })
+            ->findOrFail($imageId);
 
-        return new ImageDetailsResource($query->findOrFail($imageId));
+        return new ImageDetailsResource($image);
     }
 }
