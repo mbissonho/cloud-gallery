@@ -19,7 +19,7 @@ The architecture follows clean separation of concerns and Laravel best practices
 
 ---
 
-# How To Install
+# How To Use
 
 After the repo is cloned in your machine, just run to install and start the project:
 
@@ -33,6 +33,15 @@ When the containers are already created, just run the starter command:
 .docker/bin/start
 ```
 
+Then you need to access the laravel app container, seed the development data and start queue worker to get background processing working:
+
+```shell
+.docker/bin/bash
+```
+
+```shell
+make reset-data && ./artisan queue:work
+```
 
 # Technologies Used
 
@@ -51,6 +60,13 @@ When the containers are already created, just run the starter command:
 * Docker Compose
 * Nginx
 * LocalStack (AWS simulation)
+
+## Frontend
+
+* Vite
+* React
+* Tailwind CSS
+* Axios HTTP Client
 
 ---
 
