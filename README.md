@@ -24,7 +24,7 @@ The architecture follows clean separation of concerns and Laravel best practices
 Install the Localstack [AWS CLI](https://github.com/localstack/awscli-local)
 
 ```shell
-pip install awscli-local[ver1]
+pip install awscli-local
 ```
 
 After the repo is cloned in your machine, just run to install and start the project:
