@@ -1,6 +1,6 @@
 # Cloud Gallery
 
-An sample application(scalable and cloud-ready) for image gallery API built with modern backend architecture principles, asynchronous processing, and deep integration with AWS-like services.
+An sample application (scalable and cloud-ready) for image gallery API built with modern backend architecture principles, asynchronous processing, and deep integration with AWS-like services.
 
 ---
 
@@ -43,6 +43,8 @@ Then you need to access the laravel app container, seed the development data and
 make reset-data && ./artisan queue:work
 ```
 
+You will be able to access the frontend on http://localhost:5173
+
 # Technologies Used
 
 ## Backend
@@ -53,13 +55,17 @@ make reset-data && ./artisan queue:work
 * AWS S3 (or LocalStack for local development)
 * Queue Workers
 * PHPUnit
-
-## Infrastructure
-
-* Docker
 * Docker Compose
+
+[See more](api-laravel/README.md)
+
+## Cloud Provider - Localstack(Simulated AWS)
+
 * Nginx
 * LocalStack (AWS simulation)
+* Docker Compose
+
+[See more](awslocalstack/README.md)
 
 ## Frontend
 
@@ -67,6 +73,9 @@ make reset-data && ./artisan queue:work
 * React
 * Tailwind CSS
 * Axios HTTP Client
+* Docker Compose
+
+[See more](spa-react/README.md)
 
 ---
 
@@ -90,3 +99,13 @@ This project demonstrates:
 * Search indexing integration
 * Clean layered design
 * Fully containerized development environment
+
+---
+
+# 🗺️ Roadmap
+
+Next features and improvements planned for this project:
+
+* 💳 **Checkout System:** Implementation of a checkout flow to allow users to acquire original high-resolution images.
+* 🔄 **Infinite Scroll:** Enhancement of the image search and gallery view with infinite scroll for a more seamless user experience.
+* ☁️ **Real AWS Deployment:** A comprehensive guide and demonstration on how to deploy this project using real AWS infrastructure, utilizing services like **AWS CDK**, **Amazon ECR**, **Amazon ECS**, and others.
