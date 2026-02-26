@@ -1,16 +1,38 @@
-# React + Vite
+# Frontend (React SPA)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend is a modern Single Page Application (SPA) developed with React, Vite, and Tailwind CSS. It provides an intuitive interface for users to upload, view, and search for images with high performance, leveraging the backend's asynchronous capabilities.
 
-Currently, two official plugins are available:
+## Image processing demonstration
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Here you can see how the image upload process works; initially, the item will have a "processing" status, and after some time, the image will become available for public access.
 
-## React Compiler
+![](../.assets/spa-react/upload-image.gif)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Performance Optimization
 
-## Expanding the ESLint configuration
+The application uses advanced performance optimization techniques to ensure a smooth experience and avoid unnecessary re-renders in components that do not directly depend on the changed state.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Actions Memoization (Stable Objects)
+
+In `ImageListContext`, the state update functions (setters) are grouped into a memoized object called `actions`.
+
+```javascript
+const actions = useMemo(
+  () => ({
+    setSearchTerm,
+    setPagination,
+    setFilterTagIds,
+  }),
+  [] // Empty dependencies ensure the object is stable
+);
+```
+
+**Why is this important?**
+1. **Reference Stability:** The `actions` object remains the same throughout the application's lifecycle.
+2. **Re-render Prevention:** Components that only use actions (such as search bars or filters) and are wrapped in `React.memo` will not re-render when other context states (like the items list or loading state) change.
+
+### Demonstration: Avoiding Re-renders
+
+The video below demonstrates how the application behaves when interacting with filters, highlighting that only the strictly necessary components are updated, maintaining a high-performance interface.
+
+![](../.assets/spa-react/avoid-rerender.gif)
