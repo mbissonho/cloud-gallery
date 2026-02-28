@@ -130,14 +130,12 @@ class UserProfileTest extends TestCase
         //Arrange
         $user = User::factory()->create();
 
-        $image = Image::factory()
+        Image::factory()
             ->available()
             ->ofUser($user->id)
             ->create([
                 'title' => 'Image Title'
             ]);
-
-        $image->turnAvailable();
 
         //Act and Assert
         $this
