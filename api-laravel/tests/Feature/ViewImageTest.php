@@ -41,8 +41,6 @@ class ViewImageTest extends TestCase
             ->ofUser(User::factory()->create()->id)
             ->create();
 
-        $image->turnAvailable();
-
         //Act and Assert
         $this
             ->getJson(route('api.v1.image.details', ['imageId' => $image->id ]))
