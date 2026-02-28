@@ -53,4 +53,21 @@ class AuthTest extends TestCase
         )
             ->assertUnauthorized();
     }
+
+
+    public function test_register_requires_password_confirmation(): void
+    {
+        $data = array_merge($this->userData, ['password_confirmation' => 'does-not-match']);
+
+        $this->postJson(route('api.v1.auth.register'), $data)
+            ->assertUnprocessable();
+    }
+
+    public function test_register_requires_unique_email(): void
+    {
+        User::factory()->create(['email' => $this->userData['email']]);
+
+        $this->postJson(route('api.v1.auth.register'), $this->userData)
+            ->assertUnprocessable();
+    }
 }
