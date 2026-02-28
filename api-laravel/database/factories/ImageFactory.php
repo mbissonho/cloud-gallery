@@ -51,7 +51,7 @@ class ImageFactory extends Factory
     {
         return $this->state(function () {
             return [
-                'status' => ImageStatus::PROCESSING
+                'status' => ImageStatus::AVAILABLE
             ];
         });
     }
