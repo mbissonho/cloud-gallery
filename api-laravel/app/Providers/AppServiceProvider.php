@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\PaymentGatewayInterface;
 use App\Models\User;
 use App\Observers\UserObserver;
+use App\Services\StripePaymentGateway;
 use Aws\Sqs\SqsClient;
 use App\Scout\OpenSearch\Engine as AppOpenSearchEngine;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -37,6 +39,13 @@ class AppServiceProvider extends ServiceProvider
 
             return new SqsClient($awsConfig);
         });
+
+        $this->app->bind(PaymentGatewayInterface::class, function () {
+            return match (config('checkout.gateway')) {
+                'stripe' => new StripePaymentGateway(),
+                default => throw new \RuntimeException('Unsupported payment gateway: ' . config('checkout.gateway')),
+            };
+        });
     }
 
     /**
@@ -46,6 +55,14 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(120)->by($request->ip());
+        });
+
+        RateLimiter::for('public', function (Request $request) {
+            return Limit::perMinute(60)->by($request->ip());
+        });
+
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip());
         });
 
         $this->app[EngineManager::class]->extend('opensearch', function () {

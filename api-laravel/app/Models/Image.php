@@ -23,7 +23,8 @@ class Image extends Model
         'thumbnail_storage_bucket',
         'storage_bucket',
         'storage_key',
-        'status'
+        'status',
+        'price_cents'
     ];
 
     public function turnAvailable()

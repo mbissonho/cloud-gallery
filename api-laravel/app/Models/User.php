@@ -3,7 +3,9 @@
 namespace App\Models;
 
 
+use App\Notifications\QueuedVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -12,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
@@ -80,5 +82,15 @@ class User extends Authenticatable
     public function getProfilePhotoUrl(): ?string
     {
         return Storage::disk('thumbnail-profile-image')->url('profile/' . $this->photo_storage_key ?? null);
+    }
+
+    /**
+     * Override the MustVerifyEmail trait's default to dispatch a queued
+     * notification — keeps the Registered event listener from blocking the
+     * register HTTP response on SMTP delivery.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new QueuedVerifyEmail());
     }
 }

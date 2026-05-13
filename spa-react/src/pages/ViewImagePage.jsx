@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import placeholderImage from "../assets/placeholder.png";
 import userProfilePlaceholder from "../assets/user-profile-placeholder.jpg";
+import { CheckoutModal } from "../components/CheckoutModal";
 import ImageLoader from "../components/ImageLoader";
 import UserProfileImageLoader from "../components/UserProfileImageLoader";
 import imageService from "../services/image-service";
@@ -10,9 +12,12 @@ export default function ViewImagePage() {
   const location = useLocation();
   const { id, title, tag_names: tags, thumbnail_url } = location.state || {};
 
+  const { t } = useTranslation("view-image-page");
+
   const [details, setDetails] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   const getDetails = useCallback(async () => {
     setLoading(true);
@@ -146,7 +151,25 @@ export default function ViewImagePage() {
                   )}
                 </div>
               </div>
+
+              {details.price_cents > 0 && (
+                <button
+                  onClick={() => setIsCheckoutOpen(true)}
+                  className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white
+                  cursor-pointer
+                  shadow-sm hover:bg-blue-500 transition-colors"
+                >
+                  {t("buy_original")} — ${(details.price_cents / 100).toFixed(2)}
+                </button>
+              )}
             </div>
+
+            <CheckoutModal
+              isOpen={isCheckoutOpen}
+              onClose={setIsCheckoutOpen}
+              image={{ id, title }}
+              priceCents={details.price_cents}
+            />
           </div>
         )}
       </div>

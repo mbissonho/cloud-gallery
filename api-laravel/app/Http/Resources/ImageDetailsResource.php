@@ -19,7 +19,8 @@ class ImageDetailsResource extends JsonResource
             'created_at' => $this->resource->created_at,
             'author_name' => $this->resource->user->name,
             'author_bio' => $this->resource->user->bio,
-            'author_photo' => $this->resource->user->getProfilePhotoUrl()
+            'author_photo' => $this->resource->user->getProfilePhotoUrl(),
+            'price_cents' => $this->resource->price_cents ?: config('checkout.default_price_cents'),
         ];
     }
 }

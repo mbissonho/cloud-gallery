@@ -1,1 +1,17 @@
-{}
+{
+  "buy_original": "Buy Original",
+  "checkout_title": "Purchase Original Image",
+  "checkout_description": "You will receive a temporary download link to the full-resolution original image after payment.",
+  "checkout_email_label": "Your email",
+  "checkout_email_placeholder": "email@example.com",
+  "checkout_email_required": "Please enter your email address.",
+  "checkout_logged_as": "Purchasing as {{email}}",
+  "checkout_pay_button": "Proceed to Payment",
+  "checkout_error": "Something went wrong. Please try again.",
+  "checkout_success_title": "Purchase Completed!",
+  "checkout_success_description": "Your payment was successful. Click the button below to download the original image.",
+  "checkout_download_button": "Download Original Image",
+  "checkout_download_expired": "This download link has expired.",
+  "checkout_loading": "Preparing your download...",
+  "checkout_back_home": "Back to Gallery"
+}

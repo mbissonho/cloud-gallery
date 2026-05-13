@@ -15,6 +15,7 @@ const EditProfilePage = lazy(() => import("./pages/EditProfilePage"));
 const MyImageListPage = lazy(() => import("./pages/MyImageListPage"));
 const CreateImagePage = lazy(() => import("./pages/CreateImagePage"));
 const EditImagePage = lazy(() => import("./pages/EditImagePage"));
+const CheckoutSuccessPage = lazy(() => import("./pages/CheckoutSuccessPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 
@@ -43,6 +44,7 @@ function App() {
             }
           />
           <Route path="/view/:imageId" element={<ViewImagePage />} />
+          <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
           <Route path="/profile/:userId" element={<ViewProfilePage />} />
           <Route element={<GuestGuard redirectTo="/" />}>
             <Route path="/login" element={<LoginPage />} />

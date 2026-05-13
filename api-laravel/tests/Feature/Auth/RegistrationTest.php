@@ -2,31 +2,60 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Arr;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
+use ReflectionMethod;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_new_users_can_register(): void
+    public function test_register_endpoint_creates_user_and_fires_registered_event(): void
     {
-        $data = [
+        Event::fake([Registered::class]);
+
+        $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password'
-        ];
+            'password' => 'Secret-123',
+            'password_confirmation' => 'Secret-123',
+        ]);
 
-        $response = $this->post(route('api.v1.auth.register'), $data);
+        $response->assertCreated();
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+            'email_verified_at' => null,
+        ]);
 
-        $response
-            ->assertCreated();
+        Event::assertDispatched(
+            Registered::class,
+            fn (Registered $event) => $event->user->email === 'test@example.com',
+        );
+    }
 
-        $this->assertDatabaseHas(
-            'users',
-            Arr::except($data, ['password', 'password_confirmation'])
+    public function test_register_route_is_listed_in_csrf_except_paths(): void
+    {
+        // The CSRF middleware auto-skips inside tests (runningUnitTests check),
+        // so a plain POST without a token would pass regardless. Inspect the
+        // configured `except` list directly to prove the exemption set in
+        // bootstrap/app.php actually reached the middleware — and that other
+        // stateful routes (e.g. /login) are still being protected.
+        $middleware = $this->app->make(ValidateCsrfToken::class);
+
+        $inExceptArray = new ReflectionMethod($middleware, 'inExceptArray');
+        $inExceptArray->setAccessible(true);
+
+        $register = Request::create('/api/v1/auth/register', 'POST');
+        $login = Request::create('/login', 'POST');
+
+        $this->assertTrue(
+            $inExceptArray->invoke($middleware, $register),
+            'POST /api/v1/auth/register must be in the CSRF except list.',
+        );
+        $this->assertFalse(
+            $inExceptArray->invoke($middleware, $login),
+            'POST /login must still validate CSRF — only register is exempt.',
         );
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,7 +25,10 @@ class AuthController extends Controller
     {
         $validatedAttributes = $request->validated();
         $validatedAttributes['password'] = Hash::make($validatedAttributes['password']);
-        User::create($validatedAttributes);
+        $user = User::create($validatedAttributes);
+
+        // Triggers SendEmailVerificationNotification because User implements MustVerifyEmail.
+        event(new Registered($user));
 
         return response(status: 201);
     }
