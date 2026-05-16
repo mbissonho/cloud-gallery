@@ -1,0 +1,4 @@
+#!/bin/ash
+set -e
+
+php artisan app:check-database-connection && php artisan migrate --force --isolated

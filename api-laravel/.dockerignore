@@ -1,0 +1,43 @@
+# Environment files (injected at runtime, never baked into the image)
+.env
+.env.*
+!.env.example
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies (reinstalled inside the image)
+vendor
+node_modules
+
+# Local logs and runtime caches
+storage/logs/*
+!storage/logs/.gitignore
+storage/framework/cache/data/*
+storage/framework/sessions/*
+!storage/framework/sessions/.gitignore
+storage/framework/views/*
+!storage/framework/views/.gitignore
+bootstrap/cache/*.php
+
+# Tests and dev tooling
+tests
+phpunit.xml
+.phpunit.cache
+.phpunit.result.cache
+
+# IDE / editor / OS
+.idea
+.vscode
+.editorconfig
+.DS_Store
+*.swp
+*.swo
+
+# Dev-only docker tooling (production Dockerfiles live in .production/)
+docker
+docker-compose.yml
+docker-compose.*.yml
+Makefile

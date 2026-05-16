@@ -1,0 +1,11 @@
+#!/bin/ash
+set -e
+
+init_storage
+
+php artisan package:discover --ansi
+php artisan optimize
+
+init_migration
+
+exec "$@"

@@ -1,5 +1,5 @@
 services:
-    laravel.web:
+    laravel.test:
         build:
             context: ./docker/8.4
             dockerfile: Dockerfile
@@ -24,6 +24,7 @@ services:
         depends_on:
             - mysql
             - mailpit
+            - redis
     laravel.scheduler:
         build:
             context: ./docker/8.4
@@ -42,7 +43,7 @@ services:
         working_dir: /var/www/html
         volumes:
             - '.:/var/www/html'
-        command: php artisan schedule:work
+        command: 'php artisan schedule:work'
         networks:
             - sail
         depends_on:
@@ -79,6 +80,21 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
 networks:
     sail:
         driver: bridge
@@ -86,4 +102,6 @@ volumes:
     sail-mysql:
         driver: local
     sail-opensearch:
+        driver: local
+    sail-redis:
         driver: local
