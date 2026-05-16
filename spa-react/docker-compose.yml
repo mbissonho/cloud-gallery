@@ -11,4 +11,10 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - HOME=/app
       - npm_config_cache=/app/.npm-cache
-    command: tail -f /dev/null
+    command: sh -c "[ -d node_modules/vite ] || npm install; npm run dev -- --host"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5173/"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 60s

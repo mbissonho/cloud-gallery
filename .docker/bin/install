@@ -5,7 +5,7 @@ if [ ${0} != ".docker/bin/install" ]; then
   exit 0
 fi
 
-mv api-laravel/.env.local api-laravel/.env
+cp api-laravel/.env.local api-laravel/.env
 
 export WWWUSER=${WWWUSER:-$UID}
 export WWWGROUP=${WWWGROUP:-$(id -g)}

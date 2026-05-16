@@ -8,6 +8,6 @@ fi
 export WWWUSER=${WWWUSER:-$UID}
 export WWWGROUP=${WWWGROUP:-$(id -g)}
 
-docker compose -f spa-react/docker-compose.yml down -v
-docker compose -f api-laravel/docker-compose.yml down -v
-docker compose -f awslocalstack/docker-compose.yml down -v
+docker compose -f spa-react/docker-compose.yml down -v --remove-orphans
+docker compose -f api-laravel/docker-compose.yml down -v --remove-orphans
+docker compose -f awslocalstack/docker-compose.yml down -v --remove-orphans
