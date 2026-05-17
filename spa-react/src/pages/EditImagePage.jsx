@@ -38,6 +38,14 @@ export default function EditImagePage() {
         .string()
         .oneOf(["AVAILABLE", "DISABLED"], t("validation.statusInvalid"))
         .required(t("validation.statusRequired")),
+    file_price: yup
+        .number()
+        .transform((value, originalValue) =>
+            originalValue === "" || originalValue === null ? 0 : value
+        )
+        .typeError(t("validation.priceNumber"))
+        .min(0, t("validation.priceMin"))
+        .max(99999.99, t("validation.priceMax")),
   });
 
   const {
@@ -52,6 +60,7 @@ export default function EditImagePage() {
       file_tag_ids: [],
       file_description: "",
       file_status: status,
+      file_price: 0,
     },
   });
 
@@ -70,6 +79,7 @@ export default function EditImagePage() {
             reset({
               file_description: imageData.description || "",
               file_status: status,
+              file_price: ((imageData.price_cents ?? 0) / 100).toFixed(2),
             });
 
             // Configure the initial tags for TagSearchAndSelectInput component
@@ -125,6 +135,7 @@ export default function EditImagePage() {
       description: data.file_description,
       tag_ids: data.file_tag_ids,
       status: data.file_status,
+      price_cents: Math.round((Number(data.file_price) || 0) * 100),
     };
 
     imageService
@@ -228,6 +239,33 @@ export default function EditImagePage() {
             {errors.file_description && (
                 <p className="text-red-500 text-xs italic mt-1">
                   {errors.file_description.message}
+                </p>
+            )}
+          </div>
+
+          {/* Price */}
+          <div className="mb-6">
+            <label
+                htmlFor="file_price"
+                className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              {t("form.priceLabel")}
+            </label>
+            <input
+                type="number"
+                id="file_price"
+                step="0.01"
+                min="0"
+                {...register("file_price")}
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                    errors.file_price ? "border-red-500" : ""
+                }`}
+                placeholder={t("form.pricePlaceholder")}
+            />
+            <p className="text-gray-500 text-xs mt-1">{t("form.priceHelp")}</p>
+            {errors.file_price && (
+                <p className="text-red-500 text-xs italic mt-1">
+                  {errors.file_price.message}
                 </p>
             )}
           </div>

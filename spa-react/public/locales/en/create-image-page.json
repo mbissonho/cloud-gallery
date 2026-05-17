@@ -7,6 +7,9 @@
     "tagsLabel": "Tags",
     "descriptionLabel": "Description (optional)",
     "descriptionPlaceholder": "Add a brief description (max 255 characters)",
+    "priceLabel": "Price (USD)",
+    "priceHelp": "Leave 0 to use the platform default price.",
+    "pricePlaceholder": "0.00",
     "submitButton": "Upload Image",
     "uploadingButton": "Uploading..."
   },
@@ -14,7 +17,10 @@
     "titleRequired": "The image title is required.",
     "descriptionMax": "The description cannot exceed 255 characters.",
     "fileRequired": "Please select an image to upload.",
-    "tagsRequired": "Tags required"
+    "tagsRequired": "Tags required",
+    "priceMin": "The price cannot be negative.",
+    "priceMax": "The price is too high.",
+    "priceNumber": "Enter a valid price."
   },
   "success": {
     "imageUpload": "Image uploaded successfully!"

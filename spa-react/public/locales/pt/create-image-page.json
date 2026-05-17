@@ -7,6 +7,9 @@
     "tagsLabel": "Tags",
     "descriptionLabel": "Descrição (opcional)",
     "descriptionPlaceholder": "Adicione uma breve descrição (máx. 255 caracteres)",
+    "priceLabel": "Preço (USD)",
+    "priceHelp": "Deixe 0 para usar o preço padrão da plataforma.",
+    "pricePlaceholder": "0,00",
     "submitButton": "Enviar Imagem",
     "uploadingButton": "Enviando..."
   },
@@ -14,7 +17,10 @@
     "titleRequired": "O título da imagem é obrigatório.",
     "descriptionMax": "A descrição não pode ter mais de 255 caracteres.",
     "fileRequired": "Por favor, selecione uma imagem para upload.",
-    "tagsRequired": "Tags obrigatórias"
+    "tagsRequired": "Tags obrigatórias",
+    "priceMin": "O preço não pode ser negativo.",
+    "priceMax": "O preço é muito alto.",
+    "priceNumber": "Informe um preço válido."
   },
   "success": {
     "imageUpload": "Imagem enviada com sucesso!"

@@ -69,7 +69,8 @@ class S3ImageUploadController extends Controller
             'user_id' => auth()->user()->id,
             'storage_key' => $storageKey,
             'title' => $request->validated('file_title'),
-            'description' => $request->validated('file_description')
+            'description' => $request->validated('file_description'),
+            'price_cents' => $request->validated('file_price_cents') ?? 0,
         ]);
 
         $image->tags()->attach($request->validated('file_tag_ids') ?? []);

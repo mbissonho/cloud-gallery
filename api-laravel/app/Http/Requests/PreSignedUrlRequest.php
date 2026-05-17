@@ -19,7 +19,8 @@ class PreSignedUrlRequest extends BasePreSignedUrlRequest
                 'file_title' => 'required|string',
                 'file_tag_ids' => 'nullable|array',
                 'file_tag_ids.*' => ['exists:App\Models\Tag,id', 'distinct:strict'],
-                'file_description' => 'sometimes|nullable|string|max:255'
+                'file_description' => 'sometimes|nullable|string|max:255',
+                'file_price_cents' => 'sometimes|nullable|integer|min:0|max:9999999',
             ]
         );
     }

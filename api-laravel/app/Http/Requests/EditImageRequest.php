@@ -19,7 +19,8 @@ class EditImageRequest extends BaseRequest
             'tag_ids' => 'nullable|array',
             'tag_ids.*' => ['exists:App\Models\Tag,id', 'distinct:strict'],
             'description' => 'sometimes|nullable|string|max:255',
-            'status' => Rule::in([ImageStatus::AVAILABLE->value, ImageStatus::DISABLED->value])
+            'status' => Rule::in([ImageStatus::AVAILABLE->value, ImageStatus::DISABLED->value]),
+            'price_cents' => 'sometimes|integer|min:0|max:9999999',
         ];
     }
 }

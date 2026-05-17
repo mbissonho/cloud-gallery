@@ -5,6 +5,9 @@
     "statusLabel": "Status",
     "descriptionLabel": "Descrição (opcional)",
     "descriptionPlaceholder": "Adicione uma breve descrição (máximo de 255 caracteres)",
+    "priceLabel": "Preço (USD)",
+    "priceHelp": "Deixe 0 para usar o preço padrão da plataforma.",
+    "pricePlaceholder": "0,00",
     "saveButton": "Salvar Imagem",
     "savingButton": "Salvando...",
     "statusAvailable": "DISPONIVEL",
@@ -13,7 +16,10 @@
   "validation": {
     "descriptionMax": "A descrição não pode exceder 255 caracteres.",
     "tagsRequired": "Tags são obrigatórias",
-    "statusInvalid": "Status inválido"
+    "statusInvalid": "Status inválido",
+    "priceMin": "O preço não pode ser negativo.",
+    "priceMax": "O preço é muito alto.",
+    "priceNumber": "Informe um preço válido."
   },
   "success": {
     "imageUpdate": "Imagem atualizada com sucesso!"
