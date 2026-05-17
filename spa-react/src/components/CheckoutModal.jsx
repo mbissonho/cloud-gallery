@@ -101,7 +101,7 @@ export function CheckoutModal({ isOpen, onClose, image, priceCents }) {
 
                     {isAuthenticated ? (
                       <p className="text-sm text-gray-600">
-                        {t("checkout_logged_as", { email: user?.email })}
+                        {t("checkout_logged_as", { email: user?.data?.email })}
                       </p>
                     ) : (
                       <div>

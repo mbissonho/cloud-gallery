@@ -24,6 +24,15 @@ class CheckoutController extends Controller
             ->findOrFail($request->validated('image_id'));
 
         $user = Auth::guard('sanctum')->user();
+
+        // Owners can already access their own full-resolution image via the
+        // edit/manage flow — charging them for it would be nonsensical.
+        if ($user && $user->id === $image->user_id) {
+            return response()->json([
+                'message' => trans('checkout.cannot_buy_own_image'),
+            ], 403);
+        }
+
         $email = $user?->email ?? $request->validated('email');
 
         if (!$email) {

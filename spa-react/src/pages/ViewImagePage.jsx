@@ -6,18 +6,20 @@ import userProfilePlaceholder from "../assets/user-profile-placeholder.jpg";
 import { CheckoutModal } from "../components/CheckoutModal";
 import ImageLoader from "../components/ImageLoader";
 import UserProfileImageLoader from "../components/UserProfileImageLoader";
+import { useAuth } from "../contexts/AuthContext";
 import imageService from "../services/image-service";
 
 export default function ViewImagePage() {
   const location = useLocation();
   const { id, title, tag_names: tags, thumbnail_url } = location.state || {};
-
+  const { user, isAuthenticated } = useAuth();
   const { t } = useTranslation("view-image-page");
 
   const [details, setDetails] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [canBuy, setCanBuy] = useState(false);
 
   const getDetails = useCallback(async () => {
     setLoading(true);
@@ -40,6 +42,19 @@ export default function ViewImagePage() {
   useEffect(() => {
     getDetails();
   }, [id, getDetails]);
+
+  useEffect(() => {
+    if (!details.author_id) return;
+
+    setLoading(true);
+
+    setCanBuy(
+      !isAuthenticated ||
+        (isAuthenticated && user?.data?.id !== details.author_id)
+    );
+
+    setLoading(false);
+  }, [details]);
 
   return (
     <div className="flex justify-center p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen">
@@ -152,24 +167,27 @@ export default function ViewImagePage() {
                 </div>
               </div>
 
-              {details.price_cents > 0 && (
+              {canBuy && (
                 <button
                   onClick={() => setIsCheckoutOpen(true)}
                   className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white
                   cursor-pointer
                   shadow-sm hover:bg-blue-500 transition-colors"
                 >
-                  {t("buy_original")} — ${(details.price_cents / 100).toFixed(2)}
+                  {t("buy_original")} — $
+                  {(details.price_cents / 100).toFixed(2)}
                 </button>
               )}
             </div>
 
-            <CheckoutModal
-              isOpen={isCheckoutOpen}
-              onClose={setIsCheckoutOpen}
-              image={{ id, title }}
-              priceCents={details.price_cents}
-            />
+            {canBuy && (
+              <CheckoutModal
+                isOpen={isCheckoutOpen}
+                onClose={setIsCheckoutOpen}
+                image={{ id, title }}
+                priceCents={details.price_cents}
+              />
+            )}
           </div>
         )}
       </div>

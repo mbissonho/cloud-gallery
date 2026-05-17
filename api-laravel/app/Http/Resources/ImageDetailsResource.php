@@ -17,6 +17,7 @@ class ImageDetailsResource extends JsonResource
         return [
             'description' => $this->resource->description,
             'created_at' => $this->resource->created_at,
+            'author_id' => $this->resource->user_id,
             'author_name' => $this->resource->user->name,
             'author_bio' => $this->resource->user->bio,
             'author_photo' => $this->resource->user->getProfilePhotoUrl(),

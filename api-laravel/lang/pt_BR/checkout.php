@@ -5,6 +5,8 @@ return [
 
     'guest_email_required' => 'E-mail é obrigatório para checkout sem cadastro.',
 
+    'cannot_buy_own_image' => 'Você não pode comprar uma imagem que você mesmo enviou.',
+
     'invalid_webhook' => 'Webhook inválido',
 
     'gateway_unavailable' => 'O serviço de pagamento está temporariamente indisponível. Tente novamente em alguns minutos ou contate o suporte se o problema persistir.',

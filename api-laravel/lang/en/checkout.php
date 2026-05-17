@@ -5,6 +5,8 @@ return [
 
     'guest_email_required' => 'Email is required for guest checkout.',
 
+    'cannot_buy_own_image' => 'You cannot purchase an image that you uploaded.',
+
     'invalid_webhook' => 'Invalid webhook',
 
     'gateway_unavailable' => 'The payment service is temporarily unavailable. Please try again in a few minutes or contact support if the problem persists.',

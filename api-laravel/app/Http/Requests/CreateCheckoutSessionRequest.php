@@ -2,15 +2,15 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class CreateCheckoutSessionRequest extends FormRequest
+class CreateCheckoutSessionRequest extends BaseRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array|string>
+     */
     public function rules(): array
     {
         return [
