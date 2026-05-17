@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\PaymentGatewayException;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\RedirectNonJsonGet;
 use Illuminate\Foundation\Application;
@@ -48,6 +49,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json([
                     'message' => trans('http.404')
                 ], 404);
+            }
+        });
+
+        $exceptions->render(function (PaymentGatewayException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => trans('checkout.gateway_unavailable'),
+                ], 503);
             }
         });
     })->create();

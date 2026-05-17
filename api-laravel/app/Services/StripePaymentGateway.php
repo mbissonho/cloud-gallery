@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Contracts\PaymentGatewayInterface;
+use App\Exceptions\PaymentGatewayException;
 use Stripe\Checkout\Session;
+use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Stripe;
@@ -51,7 +53,17 @@ class StripePaymentGateway implements PaymentGatewayInterface
             $sessionParams['customer_email'] = $params['customer_email'];
         }
 
-        $session = Session::create($sessionParams);
+        try {
+            $session = Session::create($sessionParams);
+        } catch (ApiErrorException $e) {
+            // Preserves the original Stripe message in the chain so it
+            // reaches laravel.log via the default reporter, while the
+            // controller-facing exception stays opaque.
+            throw new PaymentGatewayException(
+                'Failed to create Stripe checkout session: ' . $e->getMessage(),
+                $e
+            );
+        }
 
         return [
             'session_id' => $session->id,
@@ -90,6 +102,11 @@ class StripePaymentGateway implements PaymentGatewayInterface
             $session = Session::retrieve($sessionId);
         } catch (InvalidRequestException) {
             return null;
+        } catch (ApiErrorException $e) {
+            throw new PaymentGatewayException(
+                'Failed to verify Stripe session: ' . $e->getMessage(),
+                $e
+            );
         }
 
         return [

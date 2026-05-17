@@ -7,6 +7,8 @@ return [
 
     'invalid_webhook' => 'Invalid webhook',
 
+    'gateway_unavailable' => 'The payment service is temporarily unavailable. Please try again in a few minutes or contact support if the problem persists.',
+
     'download_unavailable' => 'This download link has expired or the payment has not been completed yet.',
 
     'email_subject'  => 'Your download is ready',
