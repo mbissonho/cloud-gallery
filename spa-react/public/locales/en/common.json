@@ -10,5 +10,7 @@
   "sign_up": "Sign Up",
   "logout": "Log out",
   "my_image_list": "My Image List",
-  "profile": "Profile"
+  "profile": "Profile",
+  "show_password": "Show password",
+  "hide_password": "Hide password"
 }

@@ -10,5 +10,7 @@
   "sign_up": "Cadastrar",
   "logout": "Sair",
   "my_image_list": "Minhas Imagens",
-  "profile": "Perfil"
+  "profile": "Perfil",
+  "show_password": "Mostrar senha",
+  "hide_password": "Ocultar senha"
 }

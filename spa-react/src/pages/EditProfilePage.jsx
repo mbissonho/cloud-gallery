@@ -8,6 +8,7 @@ import axios from "axios";
 import profilePlaceholderImage from "../assets/user-profile-placeholder.jpg";
 import removeNullAndBlankValues from "../functions/remove-null-and-blank-values";
 import { useAuth } from "../contexts/AuthContext";
+import PasswordInput from "../components/PasswordInput";
 
 export default function EditProfilePage() {
   const {
@@ -251,8 +252,7 @@ export default function EditProfilePage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("labels.new_password")}
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 {...register("new_password")}
                 autoComplete="new-password"
                 disabled={isSubmitting}
@@ -271,8 +271,7 @@ export default function EditProfilePage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("labels.current_password")}
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 {...register("password")}
                 autoComplete="current-password"
                 disabled={isSubmitting}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import validateEmail from "../validators/validate-email";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import PasswordInput from "../components/PasswordInput";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -161,8 +162,7 @@ export default function Register() {
             >
               {t("passwordLabel")}
             </label>
-            <input
-              type="password"
+            <PasswordInput
               id="password"
               name="password"
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm
@@ -187,8 +187,7 @@ export default function Register() {
             >
               {t("passwordConfirmationLabel")}
             </label>
-            <input
-              type="password"
+            <PasswordInput
               id="password_confirmation"
               name="password_confirmation"
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm
