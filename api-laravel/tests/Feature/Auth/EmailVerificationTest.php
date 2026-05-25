@@ -25,7 +25,7 @@ class EmailVerificationTest extends TestCase
             ['id' => $user->id, 'hash' => sha1($user->email)]
         );
 
-        $response = $this->actingAs($user)->get($verificationUrl);
+        $response = $this->get($verificationUrl);
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
@@ -42,7 +42,7 @@ class EmailVerificationTest extends TestCase
             ['id' => $user->id, 'hash' => sha1('wrong-email')]
         );
 
-        $this->actingAs($user)->get($verificationUrl);
+        $this->get($verificationUrl)->assertForbidden();
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
