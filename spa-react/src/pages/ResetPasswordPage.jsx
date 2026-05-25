@@ -1,35 +1,41 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import validateEmail from "../validators/validate-email";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../contexts/AuthContext";
+import authService from "../services/auth-service";
 import PasswordInput from "../components/PasswordInput";
 
-export default function Login() {
+export default function ResetPasswordPage() {
+  const { t } = useTranslation("reset-password-page");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const { login } = useAuth();
-  const { t } = useTranslation("login-page");
+  const token = searchParams.get("token") ?? "";
+  const emailFromLink = searchParams.get("email") ?? "";
+
   const [formData, setFormData] = useState({
-    email: "john.doe@mail.com",
-    password: "password",
+    email: emailFromLink,
+    password: "",
+    password_confirmation: "",
   });
 
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({
+    password: "",
+    password_confirmation: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
-    let newErrors = { email: "", password: "" };
+    const newErrors = { password: "", password_confirmation: "" };
     let isValid = true;
 
-    if (!validateEmail(formData.email)) {
-      newErrors.email = t("validation.invalidEmail");
+    if (formData.password.length < 8) {
+      newErrors.password = t("validation.passwordMinLength");
       isValid = false;
     }
 
-    if (!formData.password) {
-      newErrors.password = t("validation.passwordRequired");
+    if (formData.password_confirmation !== formData.password) {
+      newErrors.password_confirmation = t("validation.passwordsMismatch");
       isValid = false;
     }
 
@@ -43,16 +49,27 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!token) {
+      toast(t("invalidLinkMessage"));
+      return;
+    }
     if (!validateForm()) return;
 
     setIsSubmitting(true);
 
     try {
-      await login({ email: formData.email, password: formData.password });
-
-      navigate("/");
+      await authService.resetPassword({
+        token,
+        email: formData.email,
+        password: formData.password,
+        passwordConfirmation: formData.password_confirmation,
+      });
+      toast(t("successMessage"));
+      navigate("/login");
     } catch (error) {
-      toast(t("errorMessage"));
+      const message = error.response?.data?.message ?? t("errorMessage");
+      toast(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -76,19 +93,10 @@ export default function Login() {
               type="email"
               id="email"
               name="email"
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm
-                                ${
-                                  errors.email
-                                    ? "border-red-500"
-                                    : "border-gray-300"
-                                }`}
-              autoComplete="off"
+              className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 bg-gray-50"
               value={formData.email}
-              onChange={handleChange}
+              readOnly
             />
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-600">{errors.email}</p>
-            )}
           </div>
 
           <div>
@@ -102,12 +110,8 @@ export default function Login() {
               id="password"
               name="password"
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm
-                                ${
-                                  errors.password
-                                    ? "border-red-500"
-                                    : "border-gray-300"
-                                }`}
-              autoComplete="off"
+                ${errors.password ? "border-red-500" : "border-gray-300"}`}
+              autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
             />
@@ -116,20 +120,40 @@ export default function Login() {
             )}
           </div>
 
+          <div>
+            <label
+              htmlFor="password_confirmation"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              {t("passwordConfirmationLabel")}
+            </label>
+            <PasswordInput
+              id="password_confirmation"
+              name="password_confirmation"
+              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm
+                ${errors.password_confirmation ? "border-red-500" : "border-gray-300"}`}
+              autoComplete="new-password"
+              value={formData.password_confirmation}
+              onChange={handleChange}
+            />
+            {errors.password_confirmation && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.password_confirmation}
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isSubmitting}
           >
-            {isSubmitting ? t("buttonLoggingIn") : t("buttonLogin")}
+            {isSubmitting ? t("buttonResetting") : t("buttonReset")}
           </button>
 
           <div className="text-center text-sm">
-            <Link
-              to="/forgot-password"
-              className="text-blue-600 hover:underline"
-            >
-              {t("forgotPasswordLink")}
+            <Link to="/login" className="text-blue-600 hover:underline">
+              {t("backToLogin")}
             </Link>
           </div>
         </form>

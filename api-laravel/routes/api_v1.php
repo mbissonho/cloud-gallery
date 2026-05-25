@@ -24,6 +24,10 @@ Route::middleware(['throttle:api'])->group(function () {
                     ->name('login');
                 Route::post('/register', [AuthController::class, 'register'])
                     ->name('register');
+                Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+                    ->name('forgot-password');
+                Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+                    ->name('reset-password');
             });
 
             Route::group(['prefix' => 'image', 'as' => 'image.'], function (){

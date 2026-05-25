@@ -6,6 +6,7 @@
   "buttonLoggingIn": "Entrando...",
   "errorMessage": "Erro ao fazer login!",
   "requestError": "Erro na requisição:",
+  "forgotPasswordLink": "Esqueceu sua senha?",
   "validation": {
     "invalidEmail": "E-mail inválido.",
     "passwordRequired": "A senha é obrigatória."

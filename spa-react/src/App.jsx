@@ -18,6 +18,8 @@ const EditImagePage = lazy(() => import("./pages/EditImagePage"));
 const CheckoutSuccessPage = lazy(() => import("./pages/CheckoutSuccessPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 
 
 function App() {
@@ -49,6 +51,8 @@ function App() {
           <Route element={<GuestGuard redirectTo="/" />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
           </Route>
           <Route element={<AuthGuard redirectTo="/my-image-list" />}>
             <Route path="/profile/edit" element={<EditProfilePage />} />

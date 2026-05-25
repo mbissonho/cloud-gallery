@@ -33,10 +33,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'verified' => EnsureEmailIsVerified::class,
         ]);
 
-        // Registration creates an account before any session exists, so there is
-        // no CSRF token to validate against. Skip the check on this route only.
+        // Pre-session flows (no authenticated session yet, so no CSRF token to
+        // validate against). The password reset endpoints are protected by the
+        // throttle:auth limiter and by token validation on /reset-password.
         $middleware->validateCsrfTokens(except: [
-            'api/v1/auth/register'
+            'api/v1/auth/register',
+            'api/v1/auth/forgot-password',
+            'api/v1/auth/reset-password',
         ]);
 
         $middleware

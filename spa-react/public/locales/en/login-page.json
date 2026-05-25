@@ -6,6 +6,7 @@
   "buttonLoggingIn": "Logging in...",
   "errorMessage": "Error logging in!",
   "requestError": "Request error:",
+  "forgotPasswordLink": "Forgot your password?",
   "validation": {
     "invalidEmail": "Invalid email.",
     "passwordRequired": "Password is required."

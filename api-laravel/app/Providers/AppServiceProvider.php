@@ -8,6 +8,7 @@ use App\Observers\UserObserver;
 use App\Services\StripePaymentGateway;
 use Aws\Sqs\SqsClient;
 use App\Scout\OpenSearch\Engine as AppOpenSearchEngine;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -67,6 +68,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app[EngineManager::class]->extend('opensearch', function () {
             return new AppOpenSearchEngine(config('scout.soft_delete'));
+        });
+
+        ResetPassword::createUrlUsing(function ($notifiable, string $token) {
+            return rtrim(config('app.frontend_url'), '/').'/reset-password?token='.$token
+                .'&email='.urlencode($notifiable->getEmailForPasswordReset());
         });
 
         User::observe(UserObserver::class);
