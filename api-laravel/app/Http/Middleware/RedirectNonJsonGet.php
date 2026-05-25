@@ -13,7 +13,7 @@ class RedirectNonJsonGet
         // verify-email/* is hit directly from the browser (link in an email),
         // so it never carries an Accept: application/json header. Allow it
         // through so the EmailVerificationRequest can run and the user can
-        // be redirected to the SPA's verified=1 dashboard.
+        // be redirected to the SPA's verified=1 home page.
         if (
             $request->isMethod('GET')
             && ! $request->expectsJson()
